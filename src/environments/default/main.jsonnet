@@ -1,11 +1,10 @@
 local k = import 'k.libsonnet';
 local komga = import 'komga.libsonnet';
+local retainSC = import 'local-path-retain.jsonnet';
 
-k.std +
 {
-  components: {
-    komga: komga.new({
-      nodeName: "hydrogen-sulfide", // Set this to the node where the media is
-    }),
-  },
+  myLocalPathRetainSC: retainSC.storageClass,
+  komga: komga.new({
+    nodeName: 'hydrogen-sulfide',  // Set this to the node where the media is
+  }),
 }
