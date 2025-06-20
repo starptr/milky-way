@@ -36,6 +36,7 @@
                     pkgs.hello
                     pkgs.tanka
                     pkgs.jsonnet-bundler
+                    pkgs.jsonnet-language-server
                   ];
 
                   enterShell = ''
