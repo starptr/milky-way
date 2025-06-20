@@ -35,6 +35,7 @@
                   packages = [ 
                     pkgs.hello
                     pkgs.tanka
+                    pkgs.jsonnet-bundler
                   ];
 
                   enterShell = ''
