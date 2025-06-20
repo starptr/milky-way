@@ -117,7 +117,7 @@ local k = import 'k.libsonnet';
       },
       spec: {
         rules: [{
-          host: "komga.hydrogen-sulfide",
+          host: "hydrogen-sulfide.tail4c9a.ts.net",
           http: {
             paths: [{
               path: "/",
