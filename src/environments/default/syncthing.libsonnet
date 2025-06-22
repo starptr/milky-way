@@ -63,14 +63,6 @@ local k = import 'k.libsonnet';
               image: "linuxserver/syncthing:latest",
               env: [
                 {
-                  name: "PUID",
-                  value: "1000",
-                },
-                {
-                  name: "PGID", 
-                  value: "1000",
-                },
-                {
                   name: "TZ",
                   value: "UTC",
                 },
@@ -94,10 +86,6 @@ local k = import 'k.libsonnet';
                 { name: "config", mountPath: "/config" },
                 { name: "data", mountPath: "/data" },
               ],
-              securityContext: {
-                runAsUser: 1000,
-                runAsGroup: 1000,
-              },
             }],
             volumes: [
               {
