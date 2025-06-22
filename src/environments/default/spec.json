@@ -6,6 +6,7 @@
   },
   "spec": {
     "apiServer": "https://hydrogen-sulfide:6443",
-    "namespace": "default"
+    "namespace": "default",
+    "injectLabels": true
   }
 }

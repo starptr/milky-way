@@ -36,9 +36,9 @@ local k = import 'k.libsonnet';
       },
     },
 
-    daemonSet: {
+    deployment: {
       apiVersion: k.std.apiVersion.apps,
-      kind: "DaemonSet",
+      kind: "Deployment",
       metadata: {
         name: "syncthing",
       },
@@ -151,6 +151,21 @@ local k = import 'k.libsonnet';
       },
     },
 
+    middleware: {
+      apiVersion: "traefik.io/v1alpha1",
+      kind: "Middleware",
+      metadata: {
+        name: "syncthing-strip",
+      },
+      spec: {
+        stripPrefix: {
+          prefixes: [
+            "/syncthing",
+          ],
+        },
+      },
+    },
+
     ingress: {
       apiVersion: k.std.apiVersion.net,
       kind: "Ingress",
@@ -158,6 +173,7 @@ local k = import 'k.libsonnet';
         name: "syncthing",
         annotations: {
           "traefik.ingress.kubernetes.io/router.entrypoints": "web",
+          "traefik.ingress.kubernetes.io/router.middlewares": "syncthing-strip@kubernetescrd"
         },
       },
       spec: {
@@ -185,8 +201,9 @@ local k = import 'k.libsonnet';
     resources:: [
       self.configPVC,
       self.dataPVC,
-      self.daemonSet,
+      self.deployment,
       self.service,
+      self.middleware,
       self.ingress,
     ],
   },
