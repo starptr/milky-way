@@ -61,6 +61,10 @@ local k = import 'k.libsonnet';
             containers: [{
               name: "komga",
               image: "gotson/komga",
+              env: [{
+                name: "SERVER_SERVLET_CONTEXT_PATH",
+                value: "/komga",
+              }],
               ports: [{
                 containerPort: 25600,
               }],
@@ -120,7 +124,7 @@ local k = import 'k.libsonnet';
           host: "hydrogen-sulfide.tail4c9a.ts.net",
           http: {
             paths: [{
-              path: "/",
+              path: "/komga",
               pathType: "Prefix",
               backend: {
                 service: {
