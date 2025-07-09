@@ -135,7 +135,7 @@ local k = import 'k.libsonnet';
                   service: {
                     name: name,
                     port: {
-                      number: 80,
+                      number: 8384,
                     },
                   },
                 },
