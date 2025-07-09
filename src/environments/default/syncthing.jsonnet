@@ -53,7 +53,9 @@ local k = import 'k.libsonnet';
             },
           },
           spec: {
-            nodeName: nodeName,
+            nodeSelector: {
+              "kubernetes.io/hostname": nodeName,
+            },
             containers: [
               {
                 name: name,

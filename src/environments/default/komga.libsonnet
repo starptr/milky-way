@@ -59,7 +59,7 @@ local retainSC = import 'local-path-retain.jsonnet';
             },
           },
           spec: {
-            nodeSelector: { // TODO: use nodeName instead
+            nodeSelector: {
               "kubernetes.io/hostname": nodeName,
             },
             containers: [{

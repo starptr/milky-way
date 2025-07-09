@@ -12,19 +12,19 @@ local komga = komgaLib.new(
   komga: komga,
   syncthing: syncthingLib.new(
     nodeName = 'hydrogen-sulfide',
-    extraVolumeMounts = [
-      {
-        name: 'komga-data',
-        mountPath: '/data/komga',
-      },
-    ],
-    extraVolumes = [
-      {
-        name: 'komga-data',
-        persistentVolumeClaim: {
-          claimName: komga.dataPVC.metadata.name,
-        },
-      },
-    ],
+    //extraVolumeMounts = [
+    //  {
+    //    name: 'komga-data',
+    //    mountPath: '/data/komga',
+    //  },
+    //],
+    //extraVolumes = [
+    //  {
+    //    name: 'komga-data',
+    //    persistentVolumeClaim: {
+    //      claimName: komga.dataPVC.metadata.name,
+    //    },
+    //  },
+    //],
   ),
 }
