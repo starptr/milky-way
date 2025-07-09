@@ -1,6 +1,10 @@
 local k = import 'k.libsonnet';
+local retainSC = import 'local-path-retain.jsonnet';
 {
-  new(params):: {
+  new(
+    nodeName
+  ):: {
+    local this = self,
     configPVC: {
       apiVersion: k.std.apiVersion.core,
       kind: "PersistentVolumeClaim",
@@ -31,7 +35,7 @@ local k = import 'k.libsonnet';
             storage: "10Gi",
           },
         },
-        storageClassName: "my-local-path-retain",
+        storageClassName: retainSC.nameRef,
       },
     },
 
@@ -56,11 +60,11 @@ local k = import 'k.libsonnet';
           },
           spec: {
             nodeSelector: {
-              "kubernetes.io/hostname": params.nodeName,
+              "kubernetes.io/hostname": nodeName,
             },
             containers: [{
               name: "komga",
-              image: "gotson/komga",
+              image: "gotson/komga:1.22.0@sha256:ba892ab3e082b17e73929b06b89f1806535bc72ef4bc6c89cd3e135af725afc3",
               env: [{
                 name: "SERVER_SERVLET_CONTEXT_PATH",
                 value: "/komga",
@@ -77,13 +81,13 @@ local k = import 'k.libsonnet';
               {
                 name: "config",
                 persistentVolumeClaim: {
-                  claimName: "komga-config-pvc",
+                  claimName: this.configPVC.metadata.name,
                 },
               },
               {
                 name: "data",
                 persistentVolumeClaim: {
-                  claimName: "komga-data-pvc",
+                  claimName: this.dataPVC.metadata.name,
                 },
               },
             ],

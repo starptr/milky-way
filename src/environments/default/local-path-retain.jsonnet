@@ -1,4 +1,5 @@
 {
+  local this = self,
   storageClass: {
     apiVersion: "storage.k8s.io/v1",
     kind: "StorageClass",
@@ -12,4 +13,5 @@
       type: "default",
     },
   },
+  nameRef: this.storageClass.metadata.name,
 }
