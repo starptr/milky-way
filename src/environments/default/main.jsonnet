@@ -8,6 +8,13 @@ local komga = komgaLib.new(
 );
 
 {
+  ingressNginxNS: {
+    apiVersion: k.std.apiVersion.core,
+    kind: "Namespace",
+    metadata: {
+      name: "ingress-nginx",
+    },
+  },
   myLocalPathRetainSC: retainSC.storageClass,
   komga: komga,
   syncthing: syncthingLib.new(
