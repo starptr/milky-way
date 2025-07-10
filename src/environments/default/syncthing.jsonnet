@@ -109,7 +109,7 @@ local k = import 'k.libsonnet';
           { port: 8384, targetPort: containerPortNames.gui, name: 'gui' },
           { port: 22000, targetPort: containerPortNames.syncTcp, name: 'sync-tcp' },
           { port: 22000, targetPort: containerPortNames.syncUdp, protocol: 'UDP', name: 'sync-udp' },
-          { port: 21027, targetPort: containerPortNames.discoveryUdpBroadcast, protocol: 'UDP', name: 'discovery-udp-broadcast' },
+          { port: 21027, targetPort: containerPortNames.discoveryUdpBroadcast, protocol: 'UDP', name: 'disco' },
         ],
       },
     },
