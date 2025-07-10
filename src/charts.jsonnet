@@ -7,5 +7,5 @@ local helm = tanka.helm.new(std.thisFile);
     values: {
       persistence: { enabled: true },
     },
-  })
+  }),
 }

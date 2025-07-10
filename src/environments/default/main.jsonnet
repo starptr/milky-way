@@ -2,6 +2,7 @@ local k = import 'k.libsonnet';
 local komgaLib = import 'komga.libsonnet';
 local syncthingLib = import 'syncthing.jsonnet';
 local retainSC = import 'local-path-retain.jsonnet';
+local charts = import '../../charts.jsonnet';
 
 local komga = komgaLib.new(
   nodeName = 'hydrogen-sulfide',  // Set this to the node where the media is
@@ -15,6 +16,7 @@ local komga = komgaLib.new(
       name: "ingress-nginx",
     },
   },
+  nginx: charts.nginx,
   myLocalPathRetainSC: retainSC.storageClass,
   komga: komga,
   syncthing: syncthingLib.new(
