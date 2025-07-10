@@ -120,6 +120,7 @@ local k = import 'k.libsonnet';
       metadata: {
         name: name,
         annotations: {
+          "kubernetes.io/ingress.class": "traefik",
           "traefik.ingress.kubernetes.io/router.entrypoints": "web",
         },
       },

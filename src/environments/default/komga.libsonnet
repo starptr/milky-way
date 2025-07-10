@@ -120,6 +120,7 @@ local retainSC = import 'local-path-retain.jsonnet';
       metadata: {
         name: "komga",
         annotations: {
+          "kubernetes.io/ingress.class": "traefik",
           "traefik.ingress.kubernetes.io/router.entrypoints": "web",
         },
       },
