@@ -6,6 +6,15 @@ local helm = tanka.helm.new(std.thisFile);
     namespace: "ingress-nginx",
     values: {
       persistence: { enabled: true },
+      controller: {
+        service: {
+          type: "ClusterIP",
+        },
+        config: {
+          allowSnippetAnnotations: true,
+        },
+        allowSnippetAnnotations: true,
+      },
     },
   }),
 }
