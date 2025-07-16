@@ -122,6 +122,7 @@ local k = import 'k.libsonnet';
         annotations: {
           "kubernetes.io/ingress.class": "traefik",
           "traefik.ingress.kubernetes.io/router.entrypoints": "web",
+          "traefik.ingress.kubernetes.io/router.tls": "false",
         },
       },
       spec: {
@@ -149,6 +150,9 @@ local k = import 'k.libsonnet';
             host: "syncthing.ts.andref.app",
             http: this.ingress.spec.rules[0].http, # TODO: validate the host is equal to "syncthing.sdts.local"
           },
+          //{
+          //  http: this.ingress.spec.rules[0].http, # TODO: validate the host is equal to "syncthing.sdts.local"
+          //}
         ],
       },
     },
