@@ -125,25 +125,31 @@ local k = import 'k.libsonnet';
         },
       },
       spec: {
-        rules: [{
-          host: "syncthing.sdts.local",
-          http: {
-            paths: [
-              {
-                path: "/",
-                pathType: "Prefix",
-                backend: {
-                  service: {
-                    name: name,
-                    port: {
-                      number: 8384,
+        rules: [
+          {
+            host: "syncthing.sdts.local",
+            http: {
+              paths: [
+                {
+                  path: "/",
+                  pathType: "Prefix",
+                  backend: {
+                    service: {
+                      name: name,
+                      port: {
+                        number: 8384,
+                      },
                     },
                   },
                 },
-              },
-            ],
+              ],
+            },
           },
-        }],
+          {
+            host: "syncthing.ts.andref.app",
+            http: this.ingress.spec.rules[0].http, # TODO: validate the host is equal to "syncthing.sdts.local"
+          },
+        ],
       },
     },
 
