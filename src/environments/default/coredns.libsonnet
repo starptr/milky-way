@@ -17,7 +17,7 @@ local utils = import 'utils.jsonnet';
         },
         data: {
           Corefile: |||
-            .:53 {
+            .:%d {
               errors
               log
               health
@@ -27,7 +27,7 @@ local utils = import 'utils.jsonnet';
               cache 30
               reload
             }
-          |||,
+          ||| % port,
         },
       },
       daemonSet: {
@@ -54,15 +54,15 @@ local utils = import 'utils.jsonnet';
               containers: [{
                 name: "coredns",
                 image: image,
-                args: ["-conf", "/etc/coredns/Corefile"],
+                args: ["-conf", "/etc/coredns/Corefile", "-dns.port", "%d" % port],
                 ports: [
                   {
-                    containerPort: 53,
+                    containerPort: port,
                     hostPort: port,
                     protocol: "UDP",
                   },
                   {
-                    containerPort: 53,
+                    containerPort: port,
                     hostPort: port,
                     protocol: "TCP",
                   },
