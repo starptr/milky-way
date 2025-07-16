@@ -3,6 +3,7 @@ local komgaLib = import 'komga.libsonnet';
 local syncthingLib = import 'syncthing.jsonnet';
 local retainSC = import 'local-path-retain.jsonnet';
 local charts = import '../../charts.jsonnet';
+local coredns = import 'coredns.jsonnet';
 
 local komga = komgaLib.new(
   nodeName = 'hydrogen-sulfide',  // Set this to the node where the media is
@@ -18,6 +19,7 @@ local komga = komgaLib.new(
   },
   nginx: charts.nginx,
   myLocalPathRetainSC: retainSC.storageClass,
+  coredns: coredns.new(), // TODO: specify nodeSelector and label nodes that should have the DNS
   komga: komga,
   syncthing: syncthingLib.new(
     nodeName = 'hydrogen-sulfide',
