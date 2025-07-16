@@ -114,12 +114,11 @@ local k = import 'k.libsonnet';
       },
     },
 
-    ingressFromTraefikToNginx: {
+    ingress: {
       apiVersion: k.std.apiVersion.net,
       kind: "Ingress",
       metadata: {
-        name: "traefik-to-nginx-" + name,
-        namespace: "ingress-nginx",
+        name: name,
         annotations: {
           "kubernetes.io/ingress.class": "traefik",
           "traefik.ingress.kubernetes.io/router.entrypoints": "web",
@@ -127,55 +126,12 @@ local k = import 'k.libsonnet';
       },
       spec: {
         rules: [{
-          host: "hydrogen-sulfide.tail4c9a.ts.net",
+          host: "syncthing.sdts.local",
           http: {
             paths: [
               {
-                path: "/syncthing",
+                path: "/",
                 pathType: "Prefix",
-                backend: {
-                  service: {
-                    name: "ingress-nginx-controller",
-                    port: {
-                      number: 80,
-                    },
-                  },
-                },
-              },
-            ],
-          },
-        }],
-      },
-    },
-
-    ingress: {
-      apiVersion: k.std.apiVersion.net,
-      kind: "Ingress",
-      metadata: {
-        name: name,
-        annotations: {
-          "kubernetes.io/ingress.class": "nginx",
-          "nginx.ingress.kubernetes.io/use-regex": "true",
-          "nginx.ingress.kubernetes.io/rewrite-target": "/$2",
-          "nginx.ingress.kubernetes.io/proxy-read-timeout": "600",
-          "nginx.ingress.kubernetes.io/proxy-send-timeout": "600",
-          "nginx.ingress.kubernetes.io/configuration-snippet": |||
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-          |||,
-        },
-      },
-      spec: {
-        ingressClassName: "nginx",
-        rules: [{
-          host: "hydrogen-sulfide.tail4c9a.ts.net",
-          http: {
-            paths: [
-              {
-                path: "/syncthing(/|$)(.*)",
-                pathType: "ImplementationSpecific",
                 backend: {
                   service: {
                     name: name,
@@ -184,11 +140,11 @@ local k = import 'k.libsonnet';
                     },
                   },
                 },
-              }
-            ]
-          }
-        }]
-      }
+              },
+            ],
+          },
+        }],
+      },
     },
 
     resources:: [

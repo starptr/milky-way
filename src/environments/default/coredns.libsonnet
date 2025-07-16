@@ -20,7 +20,7 @@ local utils = import 'utils.jsonnet';
             log
             health
             hosts {
-              100.101.102.1 example.internal
+              100.110.15.98 syncthing.sdts.local
             }
             cache 30
             reload

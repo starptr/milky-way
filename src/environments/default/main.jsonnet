@@ -3,7 +3,7 @@ local komgaLib = import 'komga.libsonnet';
 local syncthingLib = import 'syncthing.jsonnet';
 local retainSC = import 'local-path-retain.jsonnet';
 local charts = import '../../charts.jsonnet';
-local coredns = import 'coredns.jsonnet';
+local coredns = import 'coredns.libsonnet';
 
 local komga = komgaLib.new(
   nodeName = 'hydrogen-sulfide',  // Set this to the node where the media is
