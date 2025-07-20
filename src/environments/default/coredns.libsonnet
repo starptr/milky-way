@@ -60,7 +60,7 @@ local magic = {
                 securityContext: {
                   privileged: true,
                 },
-                command: ["/bin/sh", |||
+                command: ["/bin/sh", "-c", |||
                   apt update && apt install -y iproute2 iptables util-linux
                   echo "Checking for iptable redirects for Tailscale split DNS..."
 
