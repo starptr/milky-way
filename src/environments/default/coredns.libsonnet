@@ -64,13 +64,13 @@ local magic = {
                   apt update && apt install -y iproute2 iptables util-linux
                   echo "Checking for iptable redirects for Tailscale split DNS..."
 
-                  nsenter --net=/proc/1/ns/net iptables -t nat -C PREROUTING -p udp -d %(tailscaleHostIp)s --dport 53 -j REDIRECT --to-port %(corednsPort)d || {
+                  nsenter --net=/proc/1/ns/net iptables --table nat --check PREROUTING --protocol udp --destination %(tailscaleHostIp)s --dport 53 --jump REDIRECT --to-port %(corednsPort)d || {
                     echo "Missing UDP redirect. Failing initContainer."
                     exit 1
                   }
                   echo "Found UDP redirect. Continuing..."
 
-                  nsenter --net=/proc/1/ns/net iptables -t nat -C PREROUTING -p tcp -d %(tailscaleHostIp)s --dport 53 -j REDIRECT --to-port %(corednsPort)d || {
+                  nsenter --net=/proc/1/ns/net iptables --table nat --check PREROUTING --protocol tcp --destination %(tailscaleHostIp)s --dport 53 --jump REDIRECT --to-port %(corednsPort)d || {
                     echo "Missing TCP redirect. Failing initContainer."
                     exit 1
                   }
