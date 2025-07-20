@@ -1,12 +1,15 @@
 local k = import 'k.libsonnet';
 local utils = import 'utils.jsonnet';
+local magic = {
+  corednsPort: 1053,
+};
 {
   new(
     nodeSelector={},
     name="split-coredns-for-tailscale",
     image="coredns/coredns:1.12.2@sha256:af8c8d35a5d184b386c4a6d1a012c8b218d40d1376474c7d071bb6c07201f47d",
   )::
-    local port = 1053;
+    local port = magic.corednsPort;
     {
       local this = self,
       configMap: {
@@ -51,6 +54,33 @@ local utils = import 'utils.jsonnet';
             spec: {
               hostNetwork: true,
               nodeSelector: nodeSelector,
+              initContainers: [{
+                name: "check-iptable-redirects",
+                image: "debian:bookworm",
+                securityContext: {
+                  privileged: true,
+                },
+                command: ["/bin/sh", |||
+                  apt update && apt install -y iproute2 iptables util-linux
+                  echo "Checking for iptable redirects for Tailscale split DNS..."
+
+                  nsenter --net=/proc/1/ns/net iptables -t nat -C PREROUTING -p udp -d %(tailscaleHostIp)s --dport 53 -j REDIRECT --to-port %(corednsPort)d || {
+                    echo "Missing UDP redirect. Failing initContainer."
+                    exit 1
+                  }
+                  echo "Found UDP redirect. Continuing..."
+
+                  nsenter --net=/proc/1/ns/net iptables -t nat -C PREROUTING -p tcp -d %(tailscaleHostIp)s --dport 53 -j REDIRECT --to-port %(corednsPort)d || {
+                    echo "Missing TCP redirect. Failing initContainer."
+                    exit 1
+                  }
+                  echo "Found TCP redirect. Continuing..."
+
+                  echo "All redirects found. Exiting initContainer successfully."
+                  exit 0
+                ||| % magic],
+                // No need to mount the host's network namespace, since hostNetwork: true is already set
+              }],
               containers: [{
                 name: "coredns",
                 image: image,
