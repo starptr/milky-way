@@ -8,6 +8,7 @@ local magic = {
     nodeSelector={},
     name="split-coredns-for-tailscale",
     image="coredns/coredns:1.12.2@sha256:af8c8d35a5d184b386c4a6d1a012c8b218d40d1376474c7d071bb6c07201f47d",
+    initImage="debian:bookworm@sha256:ef6ef067c154c1d1f43a5596516b08ccfc961fc8809c3c1e7002615ce26b1a28",
   )::
     local port = magic.corednsPort;
     {
@@ -56,7 +57,7 @@ local magic = {
               nodeSelector: nodeSelector,
               initContainers: [{
                 name: "check-iptable-redirects",
-                image: "debian:bookworm",
+                image: initImage,
                 securityContext: {
                   privileged: true,
                 },
