@@ -70,6 +70,7 @@ local magic = {
                     echo "Could not get Tailscale IP address. Failing initContainer."
                     exit 1
                   fi
+                  echo "Found Tailscale IP: $TAILSCALE_IP"
 
                   nsenter --net=/proc/1/ns/net iptables --table nat --check PREROUTING --protocol udp --destination $TAILSCALE_IP --dport 53 --jump REDIRECT --to-port %(corednsPort)d || {
                     echo "Missing UDP redirect. Failing initContainer."
