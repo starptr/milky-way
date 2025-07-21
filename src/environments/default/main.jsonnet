@@ -10,6 +10,7 @@ local komga = komgaLib.new(
 );
 
 {
+  local this = self,
   ingressNginxNS: {
     apiVersion: k.std.apiVersion.core,
     kind: "Namespace",
@@ -23,19 +24,19 @@ local komga = komgaLib.new(
   komga: komga,
   syncthing: syncthingLib.new(
     nodeName = 'hydrogen-sulfide',
-    //extraVolumeMounts = [
-    //  {
-    //    name: 'komga-data',
-    //    mountPath: '/data/komga',
-    //  },
-    //],
-    //extraVolumes = [
-    //  {
-    //    name: 'komga-data',
-    //    persistentVolumeClaim: {
-    //      claimName: komga.dataPVC.metadata.name,
-    //    },
-    //  },
-    //],
+    extraVolumeMounts = [
+      {
+        name: 'komga-data',
+        mountPath: '/data/komga',
+      },
+    ],
+    extraVolumes = [
+      {
+        name: 'komga-data',
+        persistentVolumeClaim: {
+          claimName: komga.dataPVC.metadata.name,
+        },
+      },
+    ],
   ),
 }
