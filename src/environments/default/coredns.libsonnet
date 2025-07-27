@@ -27,6 +27,7 @@ local magic = {
               health
               hosts {
                 100.110.15.98 syncthing.sdts.local
+                100.110.15.98 komga.sdts.local
               }
               cache 30
               reload
