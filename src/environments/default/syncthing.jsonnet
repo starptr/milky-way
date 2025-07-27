@@ -14,25 +14,9 @@ local k = import 'k.libsonnet';
       syncUdp: 'sync-udp',
       discoveryUdpBroadcast: 'disco',
     },
-    configPVC: {
-      apiVersion: k.std.apiVersion.core,
-      kind: "PersistentVolumeClaim",
-      metadata: {
-        name: "syncthing-config-pvc",
-      },
-      spec: {
-        accessModes: ["ReadWriteOnce"],
-        resources: {
-          requests: {
-            storage: "1Gi",
-          },
-        },
-        storageClassName: "local-path",
-      },
-    },
-    deployment: {
+    statefulset: {
       apiVersion: 'apps/v1',
-      kind: 'Deployment',
+      kind: 'StatefulSet',
       metadata: {
         name: name,
         labels: {
@@ -40,6 +24,7 @@ local k = import 'k.libsonnet';
         },
       },
       spec: {
+        serviceName: this.service.metadata.name,
         replicas: 1,
         selector: {
           matchLabels: {
@@ -68,7 +53,7 @@ local k = import 'k.libsonnet';
                 ],
                 volumeMounts: [
                   {
-                    name: 'config',
+                    name: this.statefulset.spec.volumeClaimTemplates[0].metadata.name, // TODO: validate the 0th element is the config volume
                     mountPath: '/config',
                   },
                 ] + extraVolumeMounts,
@@ -79,16 +64,25 @@ local k = import 'k.libsonnet';
                 ],
               },
             ],
-            volumes: [
-              {
-                name: 'config',
-                persistentVolumeClaim: {
-                  claimName: this.configPVC.metadata.name,
-                },
-              },
-            ] + extraVolumes,
+            volumes: [] + extraVolumes,
           },
         },
+        volumeClaimTemplates: [
+          {
+            metadata: {
+              name: "%s-config" % name,
+            },
+            spec: {
+              accessModes: ['ReadWriteOnce'],
+              resources: {
+                requests: {
+                  storage: '1Gi',
+                },
+              },
+              storageClassName: 'local-path',
+            },
+          },
+        ],
       },
     },
 
@@ -102,7 +96,7 @@ local k = import 'k.libsonnet';
         }
       },
       spec: {
-        type: "NodePort",
+        clusterIP: 'None',  // This is a headless service for the StatefulSet
         selector: {
           app: name,
         },
@@ -159,8 +153,7 @@ local k = import 'k.libsonnet';
     },
 
     resources:: [
-      this.configPVC,
-      this.deployment,
+      this.statefulset,
       this.service,
       this.ingress,
     ],
