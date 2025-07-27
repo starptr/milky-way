@@ -137,13 +137,6 @@ local utils = import 'utils.jsonnet';
               ],
             },
           },
-          {
-            host: "syncthing.ts.andref.app",
-            http: this.ingress.spec.rules[0].http, # TODO: validate the host is equal to "syncthing.sdts.local"
-          },
-          //{
-          //  http: this.ingress.spec.rules[0].http, # TODO: validate the host is equal to "syncthing.sdts.local"
-          //}
         ],
       },
     },
