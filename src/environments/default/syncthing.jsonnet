@@ -102,6 +102,7 @@ local k = import 'k.libsonnet';
         }
       },
       spec: {
+        type: "NodePort",
         selector: {
           app: name,
         },
