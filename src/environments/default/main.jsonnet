@@ -11,14 +11,15 @@ local komga = komgaLib.new(
 
 {
   local this = self,
-  ingressNginxNS: {
-    apiVersion: k.std.apiVersion.core,
-    kind: "Namespace",
-    metadata: {
-      name: "ingress-nginx",
-    },
-  },
-  nginx: charts.nginx,
+  # Nginx ingress controller is not used in this environment, but can be added if needed.
+  #ingressNginxNS: {
+  #  apiVersion: k.std.apiVersion.core,
+  #  kind: "Namespace",
+  #  metadata: {
+  #    name: "ingress-nginx",
+  #  },
+  #},
+  #nginx: charts.nginx,
   myLocalPathRetainSC: retainSC.storageClass,
   coredns: coredns.new(), // TODO: specify nodeSelector and label nodes that should have the DNS
   komga: komga,
