@@ -1,15 +1,16 @@
-local k = import 'k.libsonnet';
+local utils = import 'utils.jsonnet';
 local retainSC = import 'local-path-retain.jsonnet';
 {
   new(
-    nodeName
+    nodeName,
+    name='komga',
   ):: {
     local this = self,
     configPVC: {
-      apiVersion: k.std.apiVersion.core,
+      apiVersion: "v1",
       kind: "PersistentVolumeClaim",
       metadata: {
-        name: "komga-config-pvc",
+        name: "%s-config-pvc" % name, // TODO: remove the "-pvc" suffix
       },
       spec: {
         accessModes: ["ReadWriteOnce"],
@@ -23,10 +24,10 @@ local retainSC = import 'local-path-retain.jsonnet';
     },
 
     dataPVC: {
-      apiVersion: k.std.apiVersion.core,
+      apiVersion: "v1",
       kind: "PersistentVolumeClaim",
       metadata: {
-        name: "komga-data-pvc",
+        name: "%s-data-pvc" % name, // TODO: remove the "-pvc" suffix
       },
       spec: {
         accessModes: ["ReadWriteOnce"],
@@ -40,23 +41,21 @@ local retainSC = import 'local-path-retain.jsonnet';
     },
 
     deployment: {
-      apiVersion: k.std.apiVersion.apps,
+      apiVersion: "apps/v1",
       kind: "Deployment",
       metadata: {
-        name: "komga",
+        name: name,
       },
       spec: {
         replicas: 1,
         selector: {
           matchLabels: {
-            app: "komga",
+            app: name,
           },
         },
         template: {
           metadata: {
-            labels: {
-              app: "komga",
-            },
+            labels: {} + this.deployment.spec.selector.matchLabels,
           },
           spec: {
             nodeSelector: {
@@ -73,8 +72,14 @@ local retainSC = import 'local-path-retain.jsonnet';
                 containerPort: 25600,
               }],
               volumeMounts: [
-                { name: "config", mountPath: "/config" },
-                { name: "data", mountPath: "/data" },
+                {
+                  name: utils.assertEqualAndReturn(this.deployment.spec.template.spec.volumes[0].name, "config"),
+                  mountPath: "/config",
+                },
+                {
+                  name: utils.assertEqualAndReturn(this.deployment.spec.template.spec.volumes[1].name, "data"),
+                  mountPath: "/data"
+                },
               ],
             }],
             volumes: [
@@ -97,15 +102,14 @@ local retainSC = import 'local-path-retain.jsonnet';
     },
 
     service: {
-      apiVersion: k.std.apiVersion.core,
+      apiVersion: "v1",
       kind: "Service",
       metadata: {
-        name: "komga",
+        name: name,
       },
       spec: {
-        selector: {
-          app: "komga",
-        },
+        // Note: a Deployment's selector is in .spec.selector.matchLabels, but a Service's selector is in .spec.selector directly.
+        selector: this.deployment.spec.selector.matchLabels,
         ports: [{
           protocol: "TCP",
           port: 80,
@@ -115,10 +119,10 @@ local retainSC = import 'local-path-retain.jsonnet';
     },
 
     ingress: {
-      apiVersion: k.std.apiVersion.net,
+      apiVersion: "networking.k8s.io/v1",
       kind: "Ingress",
       metadata: {
-        name: "komga",
+        name: name,
         annotations: {
           "kubernetes.io/ingress.class": "traefik",
           "traefik.ingress.kubernetes.io/router.entrypoints": "web",
@@ -133,9 +137,9 @@ local retainSC = import 'local-path-retain.jsonnet';
               pathType: "Prefix",
               backend: {
                 service: {
-                  name: "komga",
-                  port: {
-                    number: 80,
+                  name: this.service.metadata.name,
+                  port:{
+                    number: utils.assertEqualAndReturn(this.service.spec.ports[0].port, 80),
                   },
                 },
               },
