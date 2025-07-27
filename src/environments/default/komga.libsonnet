@@ -129,23 +129,29 @@ local retainSC = import 'local-path-retain.jsonnet';
         },
       },
       spec: {
-        rules: [{
-          host: "hydrogen-sulfide.tail4c9a.ts.net",
-          http: {
-            paths: [{
-              path: "/komga",
-              pathType: "Prefix",
-              backend: {
-                service: {
-                  name: this.service.metadata.name,
-                  port:{
-                    number: utils.assertEqualAndReturn(this.service.spec.ports[0].port, 80),
+        rules: [
+          {
+            host: "hydrogen-sulfide.tail4c9a.ts.net",
+            http: {
+              paths: [{
+                path: "/komga",
+                pathType: "Prefix",
+                backend: {
+                  service: {
+                    name: this.service.metadata.name,
+                    port:{
+                      number: utils.assertEqualAndReturn(this.service.spec.ports[0].port, 80),
+                    },
                   },
                 },
-              },
-            }],
+              }],
+            },
           },
-        }],
+          {
+            host: "komga.sdts.local",
+            http: this.ingress.spec.rules[0].http, // TODO: somehow validate index
+          },
+        ],
       },
     },
 
