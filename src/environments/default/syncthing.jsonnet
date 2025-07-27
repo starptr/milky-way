@@ -1,4 +1,4 @@
-local k = import 'k.libsonnet';
+local utils = import 'utils.jsonnet';
 {
   new(
     nodeName,
@@ -33,9 +33,7 @@ local k = import 'k.libsonnet';
         },
         template: {
           metadata: {
-            labels: {
-              app: name,
-            },
+            labels: {} + this.statefulset.spec.selector.matchLabels,
           },
           spec: {
             nodeSelector: {
@@ -53,7 +51,7 @@ local k = import 'k.libsonnet';
                 ],
                 volumeMounts: [
                   {
-                    name: this.statefulset.spec.volumeClaimTemplates[0].metadata.name, // TODO: validate the 0th element is the config volume
+                    name: utils.assertEqualAndReturn(this.statefulset.spec.volumeClaimTemplates[0].metadata.name, "syncthing-config"), // TODO: expected param should be passed in as a parameter to top-level new()
                     mountPath: '/config',
                   },
                 ] + extraVolumeMounts,
@@ -97,9 +95,7 @@ local k = import 'k.libsonnet';
       },
       spec: {
         clusterIP: 'None',  // This is a headless service for the StatefulSet
-        selector: {
-          app: name,
-        },
+        selector: this.statefulset.spec.selector.matchLabels,
         ports: [
           { port: 8384, targetPort: containerPortNames.gui, name: 'gui' },
           { port: 22000, targetPort: containerPortNames.syncTcp, name: 'sync-tcp' },
@@ -110,7 +106,7 @@ local k = import 'k.libsonnet';
     },
 
     ingress: {
-      apiVersion: k.std.apiVersion.net,
+      apiVersion: "networking.k8s.io/v1",
       kind: "Ingress",
       metadata: {
         name: name,
@@ -133,7 +129,7 @@ local k = import 'k.libsonnet';
                     service: {
                       name: name,
                       port: {
-                        number: 8384,
+                        number: utils.assertEqualAndReturn(this.service.spec.ports[0].port, 8384), // TODO: verify name is 'gui' (actually, service should use ingress value)
                       },
                     },
                   },
