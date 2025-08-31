@@ -21,7 +21,7 @@ local magic = {
         },
         data: {
           Corefile: |||
-            .:%d {
+            sdts.local:%d {
               errors
               log
               health
@@ -32,7 +32,15 @@ local magic = {
               cache 30
               reload
             }
-          ||| % port,
+            .:%d {
+              errors
+              log
+              health
+              forward . 100.100.100.100
+              cache 30
+              reload
+            }
+          ||| % [port, port],
         },
       },
       daemonSet: {
