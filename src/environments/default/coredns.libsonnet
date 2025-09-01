@@ -62,6 +62,13 @@ local magic = {
               labels: {} + this.daemonSet.spec.selector.matchLabels,
             },
             spec: {
+              tolerations: [
+                {
+                  key: "ephemeral",
+                  operator: "Exists",
+                  effect: "NoSchedule",
+                },
+              ],
               hostNetwork: true,
               nodeSelector: nodeSelector,
               initContainers: [{
