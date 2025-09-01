@@ -58,6 +58,13 @@ local retainSC = import 'local-path-retain.jsonnet';
             labels: {} + this.deployment.spec.selector.matchLabels,
           },
           spec: {
+            tolerations: [
+              {
+                key: "ephemeral",
+                operator: "Exists",
+                effect: "NoSchedule",
+              },
+            ],
             nodeSelector: {
               "kubernetes.io/hostname": nodeName,
             },
