@@ -36,6 +36,13 @@ local utils = import 'utils.jsonnet';
             labels: {} + this.statefulset.spec.selector.matchLabels,
           },
           spec: {
+            tolerations: [
+              {
+                key: "ephemeral",
+                operator: "Exists",
+                effect: "NoSchedule",
+              }
+            ],
             nodeSelector: {
               "kubernetes.io/hostname": nodeName,
             },
